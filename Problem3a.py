@@ -8,7 +8,9 @@ def main(data):
         for match in matches:
             start = match.start() - 1
             end = match.end() + 1
-            if re.search(r'[^\d|\\.]', data[i-1][start:end]) or re.search(r'[^\d|\\.]', data[i+1][start:end]) or re.search(r'[^\d|\\.]', data[i][start:end]):
+
+            found = any([re.search(r'[^\d|\\.]', data[i-z][start:end]) for z in [-1, 0, 1]])
+            if found:
                 out += int(match.group())
     return out
 

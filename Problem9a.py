@@ -18,6 +18,6 @@ dat = parse(dat, ints)
 
 def get_diff(seq):
     out = np.diff(seq)
-    return seq[-1] if all([o == 0 for o in out]) else seq[-1] + get_diff(out)
+    return seq[-1] + (get_diff(out) if any(out) else 0)
 
 print(sum([get_diff(row) for row in dat]))

@@ -54,4 +54,4 @@ for nc in range(n_cycles):
     print(nc, get_score(dat, k=0))
 
 M = 1_000_000_000
-print('Notice that a cycle of length C begins at some point N. Get the value at position (M _ N) % C')
+print('Notice that a cycle of length C begins at some point N. Get the value at position (M - N) % C')

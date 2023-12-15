@@ -1,5 +1,4 @@
 from aocd import get_data
-from collections import OrderedDict
 
 year=2023
 day=15

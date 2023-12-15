@@ -18,17 +18,14 @@ def hasher(s):
     return res
 
 
-hm = {i: OrderedDict() for i in range(256)}
+hm = {i: {} for i in range(256)}
 
 for s in dat.split(','):
     if '-' in s:
         ss = s[:-1]
-        box_num = hasher(ss)
-        hm[box_num].pop(ss, None)
+        hm[hasher(ss)].pop(ss, None)
     else:
         ss, val = s.split('=')
-        val = int(val)
-        box_num = hasher(ss)
-        hm[box_num][ss] = val
+        hm[hasher(ss)][ss] = val
 
-print(sum((k+1) * (i+1) * fl for k, v in hm.items() for i, (ss, fl) in enumerate(v.items())))
+print(sum((k+1) * (i+1) * int(fl) for k, v in hm.items() for i, (ss, fl) in enumerate(v.items())))

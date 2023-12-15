@@ -1,4 +1,3 @@
-import regex as re
 from aocd import get_data
 import re
 from functools import cache

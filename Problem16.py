@@ -1,16 +1,6 @@
 from aocd import get_data
-import regex as re
-from aoc_utils import *
-from aocd import get_data
 import numpy as np
 from functools import cache
-import os
-import sys
-os.system('color')
-np.set_printoptions(threshold=sys.maxsize)
-
-import sys
-sys.setrecursionlimit(2000)
 
 year=2023
 day=16
@@ -30,20 +20,18 @@ dat2 = r'''.|...\....
 ..//.|....'''
 
 dat = dat.split('\n')
-# dat = np.array(dat)
 dat = np.array([list(x) for x in dat])
-
 
 print(dat)
 
-ens = set()
-
-dirs = {
-    'N': (-1, 0),
-    'S': (1, 0),
-    'E': (0, 1),
-    'W': (0, -1),
+dir2vec = {
+    'N': np.array((-1, 0)),
+    'S': np.array((1, 0)),
+    'E': np.array((0, 1)),
+    'W': np.array((0, -1)),
 }
+
+vec2dir = {tuple(v): k for k, v in dir2vec.items()}
 
 
 def draw_beams(dat, a=None, b=None):
@@ -54,68 +42,66 @@ def draw_beams(dat, a=None, b=None):
                 dd[i, j] = '#'
 
             if (a, b) == (i, j):
-                # dd[i, j] = '\033[92m' + dd[i, j]
                 dd[i, j] = 'O'
+                # dd[i, j] = '\033[92m' + 'O' + '\033[0m'
 
     return dd
 
-hist = set()
 
 @cache
-def ene(i=0, j=-1, dir='E', first=False):
-    while True:
-        if (i, j, dir) in hist:
-            return
-        if not first and (i < 0 or i >= dat.shape[0] or j < 0 or j >= dat.shape[1]):
-            break
+def get_path(i=0, j=-1, dir='E', first=False):
+    while (i, j, dir) not in hist and (first or (0 <= i < dat.shape[0] and 0 <= i < dat.shape[1])):
+        vec = dir2vec[dir]
         hist.add((i, j, dir))
         ens.add((i, j))
-        ni, nj = i+dirs[dir][0], j+dirs[dir][1]
+        ni, nj = vec + (i, j)
         if ni < 0 or ni >= dat.shape[0] or nj < 0 or nj >= dat.shape[1]: return
         tile = dat[ni, nj]
-
-        ndir = dir
         if tile == '.' or (dir in 'NS' and tile in '|') or (dir in 'EW' and tile in '-'):
-            ndir = dir
-            i, j, dir = ni, nj, ndir
+            i, j, dir = ni, nj, dir
         elif tile == '/':
-            if dir == 'E':
-                ndir = 'N'
-            elif dir == 'W':
-                ndir = 'S'
-            elif dir == 'N':
-                ndir = 'E'
-            elif dir == 'S':
-                ndir = 'W'
-
-            i, j, dir = ni, nj, ndir
+            i, j, dir = ni, nj, vec2dir[tuple(vec[::-1] * -1)]
         elif tile == '\\':
-            if dir == 'E':
-                ndir = 'S'
-            elif dir == 'W':
-                ndir = 'N'
-            elif dir == 'N':
-                ndir = 'W'
-            elif dir == 'S':
-                ndir = 'E'
-
-            i, j, dir = ni, nj, ndir
+            i, j, dir = ni, nj, vec2dir[tuple(vec[::-1])]
 
         elif tile in '|-':
             if tile == '|':
-                ndir='N'
-                ene(ni, nj, ndir)
-                ndir='S'
-                ene(ni, nj, ndir)
+                get_path(ni, nj, 'N')
+                get_path(ni, nj, 'S')
             elif tile == '-':
-                ndir='W'
-                ene(ni, nj, ndir)
-                ndir='E'
-                ene(ni, nj, ndir)
+                get_path(ni, nj, 'W')
+                get_path(ni, nj, 'E')
 
 
-ene(first=True)
+res = 0
+for i in range(dat.shape[0]):
+    ens = set()
+    hist = set()
+    get_path(i, -1, 'E', first=True)
+    res = max(res, len(ens)-1)
+
+    ens = set()
+    hist = set()
+    get_path(i, dat.shape[1], 'W', first=True)
+    res = max(res, len(ens)-1)
+
+for j in range(dat.shape[1]):
+    ens = set()
+    hist = set()
+    get_path(-1, j, 'S', first=True)
+    res = max(res, len(ens)-1)
+
+    ens = set()
+    hist = set()
+    get_path(dat.shape[0], j, 'N', first=True)
+    res = max(res, len(ens)-1)
 
 
-print(draw_beams(dat))
-print(len(ens)-1)
+hist = set()
+ens = set()
+get_path(first=True)
+
+# print(draw_beams(dat))
+print('Part 1', len(ens)-1)
+print('Part 2', res)
+

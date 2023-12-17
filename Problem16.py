@@ -1,6 +1,7 @@
 from aocd import get_data
+import time
 import numpy as np
-from functools import cache
+import os
 
 year=2023
 day=16
@@ -34,24 +35,53 @@ dir2vec = {
 vec2dir = {tuple(v): k for k, v in dir2vec.items()}
 
 
-def draw_beams(dat, a=None, b=None):
-    dd = dat.copy()
-    for i in range(len(dd)):
-        for j in range(len(dd[0])):
-            if (i, j) in ens and dd[i, j] == '.':
-                dd[i, j] = '#'
-
-            if (a, b) == (i, j):
-                dd[i, j] = 'O'
-                # dd[i, j] = '\033[92m' + 'O' + '\033[0m'
-
-    return dd
+def deco(s, i=0, space=True):
+    z = 92 + i
+    out = f' \033[{z}m{s}\033[0m '
+    if not space: out = out.strip()
+    return out
 
 
-@cache
+def dir2arrow(dir):
+    if dir == 'N':
+        arrow = '^'
+    elif dir == 'S':
+        arrow = 'V'
+    elif dir == 'E':
+        arrow = '>'
+    elif dir == 'W':
+        arrow = '<'
+    return arrow
+
+
+def draw_beams(dat, hist, lb=15):
+    hists = {k: hist[k] for k in list(reversed(hist))[:lb]}
+    out = '\n'
+    for i in range(dat.shape[0]):
+        for j in range(dat.shape[1]):
+            if (i, j) in hists:
+                tile = dat[i, j]
+                dir = hists[(i, j)]
+                arrow = dir2arrow(dir)
+                out += deco(arrow if tile == '.' else tile, space=False)
+            else:
+                out += f'{dat[i, j]}'
+        out += '\n'
+
+    # print(out)
+    print(out[:5000])
+    # print(out, end='\033[F'*dat.shape[0])
+    time.sleep(0.1)
+
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+vis = {}
 def get_path(i=0, j=-1, dir='E', first=False):
+
     while (i, j, dir) not in hist and (first or (0 <= i < dat.shape[0] and 0 <= i < dat.shape[1])):
         vec = dir2vec[dir]
+        vis[(i, j)] = dir
+        draw_beams(dat, vis)
         hist.add((i, j, dir))
         ens.add((i, j))
         ni, nj = vec + (i, j)
@@ -96,12 +126,11 @@ for j in range(dat.shape[1]):
     get_path(dat.shape[0], j, 'N', first=True)
     res = max(res, len(ens)-1)
 
-
+vis = {}
 hist = set()
 ens = set()
-get_path(first=True)
+get_path(0, -1, 'E', first=True)
 
-# print(draw_beams(dat))
 print('Part 1', len(ens)-1)
 print('Part 2', res)
 

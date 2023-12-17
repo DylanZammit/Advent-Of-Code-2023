@@ -1,7 +1,7 @@
 from aocd import get_data
 import time
 import numpy as np
-import os
+import os, sys
 
 year=2023
 day=16
@@ -22,6 +22,8 @@ dat2 = r'''.|...\....
 
 dat = dat.split('\n')
 dat = np.array([list(x) for x in dat])
+dat = dat[:30,:]
+vis = []
 
 print(dat)
 
@@ -35,9 +37,9 @@ dir2vec = {
 vec2dir = {tuple(v): k for k, v in dir2vec.items()}
 
 
-def deco(s, i=0, space=True):
-    z = 92 + i
-    out = f' \033[{z}m{s}\033[0m '
+def deco(s, col=92, space=True):
+    # out = f' \033[{col}m{s}\033[0m '
+    out = f' \033[38;5;{col}m{s}\033[0m '
     if not space: out = out.strip()
     return out
 
@@ -54,33 +56,32 @@ def dir2arrow(dir):
     return arrow
 
 
-def draw_beams(dat, hist, lb=15):
-    hists = {k: hist[k] for k in list(reversed(hist))[:lb]}
+def draw_beams(dat, hist, lb=30):
     out = '\n'
+    hist = hist[-lb:]
+    ncols = 6
+
     for i in range(dat.shape[0]):
         for j in range(dat.shape[1]):
-            if (i, j) in hists:
-                tile = dat[i, j]
-                dir = hists[(i, j)]
-                arrow = dir2arrow(dir)
-                out += deco(arrow if tile == '.' else tile, space=False)
-            else:
-                out += f'{dat[i, j]}'
+            tile = dat[i, j]
+            ind, dir = next(((ind, x[2]) for ind, x in enumerate(hist[::-1]) if (x[0], x[1]) == (i, j)), (-1, -1))
+            # col = 93 if ind == 0 else 92
+            col = 226 + ind // ncols
+            out += deco(dir2arrow(dir) if tile == '.' else tile, space=False, col=col) if ind >= 0 else tile
         out += '\n'
 
-    # print(out)
-    print(out[:5000])
-    # print(out, end='\033[F'*dat.shape[0])
-    time.sleep(0.1)
-
     os.system('cls' if os.name == 'nt' else 'clear')
+    sys.stdout.write(out)
+    sys.stdout.flush()
+    time.sleep(0.01)
 
-vis = {}
+
 def get_path(i=0, j=-1, dir='E', first=False):
 
     while (i, j, dir) not in hist and (first or (0 <= i < dat.shape[0] and 0 <= i < dat.shape[1])):
         vec = dir2vec[dir]
-        vis[(i, j)] = dir
+        # vis[(i, j)] = dir
+        vis.append((i, j, dir))
         draw_beams(dat, vis)
         hist.add((i, j, dir))
         ens.add((i, j))
@@ -126,11 +127,10 @@ for j in range(dat.shape[1]):
     get_path(dat.shape[0], j, 'N', first=True)
     res = max(res, len(ens)-1)
 
-vis = {}
+vis = []
 hist = set()
 ens = set()
 get_path(0, -1, 'E', first=True)
 
 print('Part 1', len(ens)-1)
 print('Part 2', res)
-

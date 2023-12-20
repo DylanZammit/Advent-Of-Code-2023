@@ -46,3 +46,13 @@ A dynamic programming, depth-first approach was taken to solve this problem. Whe
 An application of Djikstra's pathfinding algorithm was used, where the state space is in the form of (position, direction).
 
 ![Advent Of Code Problem 17](https://github.com/DylanZammit/Advent-Of-Code-2023/blob/master/img/problem17_vis.png?raw=true)
+
+## [Problem 17](https://adventofcode.com/2023/day/17)
+## [Problem 18](https://adventofcode.com/2023/day/18)
+## [Problem 19](https://adventofcode.com/2023/day/19)
+## [Problem 20](https://adventofcode.com/2023/day/20)
+## [Problem 21](https://adventofcode.com/2023/day/21)
+## [Problem 22](https://adventofcode.com/2023/day/22)
+## [Problem 23](https://adventofcode.com/2023/day/23)
+## [Problem 24](https://adventofcode.com/2023/day/24)
+## [Problem 25](https://adventofcode.com/2023/day/25)

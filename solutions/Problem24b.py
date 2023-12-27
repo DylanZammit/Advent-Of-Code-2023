@@ -27,7 +27,7 @@ class Path:
 
 paths = [Path(r) for r in dat]
 
-paths = paths[:6]
+paths = paths[:3]
 
 syms = 'p1 p2 p3 v1 v2 v3 ' + ' '.join([f't{i+1}' for i in range(len(paths))])
 
@@ -42,5 +42,5 @@ eqns = eqns_x + eqns_y + eqns_z
 out = solve(eqns, syms, dict=True)
 
 pprint(eqns)
-pprint(out)
+print(out)
 print(out[0][syms[0]] + out[0][syms[1]] + out[0][syms[2]])

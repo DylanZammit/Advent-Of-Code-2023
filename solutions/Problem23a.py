@@ -63,7 +63,7 @@ def get_path(u=(0, 1), tgt=(dat.shape[0]-1, dat.shape[1]-2), path=None):
         if len(possibilities) > 1:
             return max((get_path(p, tgt, path.union({u})) for p in possibilities), key=lambda x: len(x))
         elif len(possibilities) == 0:
-            return path
+            return []
         u = possibilities[0]
         path.add(u)
     return path

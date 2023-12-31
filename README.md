@@ -129,6 +129,8 @@ This is essentially the `l1` distance (or the [Manhattan distance](https://en.wi
 The exact same implementation can be used, where we multiply the distances by `m = 1_000_000 - 1`.
 ## [Problem 12](https://adventofcode.com/2023/day/12)
 Jesus, Mary mother of God this took me a while.
+
+In very very loose terms: a dynamic programming approach was used where we find the next `#` or `?`, count the possibilities at this point, and repeat the procedure for the next occurrence. 
 ## [Problem 13](https://adventofcode.com/2023/day/13)
 ### Part 1
 Iterate each row and check if that is the point of reflection by expanding outward, and checking that the rows are the same as we move out. For example if we are comparing row 4, we check rows (3, 4), (2, 5), (1, 6) etc until we run out of lines. We return the index of this line of reflection. To check for the opposite direction, we simplly transpose the matrix and repeat.

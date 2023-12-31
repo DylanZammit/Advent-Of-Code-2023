@@ -29,7 +29,7 @@ dir2vec = {
     'W': np.array((0, -1)),
 }
 
-dat = [list(x)*3 for x in parse(dat)]*3
+dat = [list(x) for x in parse(dat)]
 dat = np.array(dat)
 print(dat)
 
@@ -46,7 +46,7 @@ def print_garden(dat, s=0):
 
 
 n_steps = 64
-ctiles = [tuple(np.argwhere(dat == 'S')[0]*2)]
+ctiles = [tuple(np.argwhere(dat == 'S')[0])]
 
 for i in range(n_steps):
     odat = dat.copy()

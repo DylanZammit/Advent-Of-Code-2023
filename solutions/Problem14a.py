@@ -23,8 +23,7 @@ dat = dat.split('\n')
 
 dat = [''.join(x[::-1]) for x in list(zip(*dat))]
 
-out = 0
-n = len(dat[0])
+out, n = 0, len(dat[0])
 for r in dat:
     for z in re.finditer(r'O', r):
         m = re.match(rf'.{{{z.start()}}}[O.]*((?=#)|$)', r)

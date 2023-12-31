@@ -61,10 +61,7 @@ def check_reflect(pat, i):
 
 
 def check(mat):
-    for i, row in enumerate(mat):
-        if check_reflect(mat, i):
-            return i + 1
-    return 0
+    return next((i + 1 for i, row in enumerate(mat) if check_reflect(mat, i)), 0)
 
 
 print(sum((check(pat) * 100 + check(transpose(pat.copy()))) for pat in dat))

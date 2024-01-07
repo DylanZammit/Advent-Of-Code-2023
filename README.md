@@ -2,6 +2,8 @@
 
 Attempts for the [Advent of Code](https://adventofcode.com/) 2023.
 
+![Advent Of Code Problem 21](https://github.com/DylanZammit/Advent-Of-Code-2023/blob/master/img/calendar.png?raw=true)
+
 **WARNING: SPOILERS AHEAD**
 
 ## [Problem 1](https://adventofcode.com/2023/day/1)
